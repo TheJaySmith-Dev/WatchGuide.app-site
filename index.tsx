@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
   ArrowLeft,
   ArrowUpRight,
+  ChevronLeft,
+  ChevronRight,
   Ban,
   Globe,
   Heart,
@@ -90,6 +92,7 @@ const Header = ({ page, navigate }: { page: Page; navigate: (p: Page, anchor?: s
 
   const links: { label: string; action: () => void; active: boolean }[] = [
     { label: 'Features', action: () => go('/', 'features'), active: false },
+    { label: 'iPad', action: () => go('/', 'ipad'), active: false },
     { label: 'Apple TV', action: () => go('/', 'apple-tv'), active: false },
     { label: 'Privacy', action: () => go('/privacy'), active: page === '/privacy' },
     { label: 'Support', action: () => go('/support'), active: page === '/support' },
@@ -97,19 +100,19 @@ const Header = ({ page, navigate }: { page: Page; navigate: (p: Page, anchor?: s
 
   return (
     <header className="fixed top-3 md:top-5 inset-x-0 z-50 px-4 flex justify-center pointer-events-none">
-      <div className="pointer-events-auto w-full max-w-[44rem]">
+      <div className="pointer-events-auto w-full max-w-[48rem]">
         <nav className="glass rounded-full pl-2 pr-2 py-2 flex items-center justify-between gap-2 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.7)]">
           <button onClick={() => go('/')} className="flex items-center gap-2.5 pl-1 pr-2 py-0.5 rounded-full" aria-label="WatchGuide home">
             <AppIcon className="w-9 h-9" />
             <span className="text-[17px] font-extrabold tracking-tight">WatchGuide</span>
           </button>
 
-          <div className="hidden md:flex items-center gap-1 text-[14px] font-semibold text-[color:var(--muted)]">
+          <div className="hidden md:flex items-center gap-0.5 lg:gap-1 whitespace-nowrap text-[14px] font-semibold text-[color:var(--muted)]">
             {links.map((l) => (
               <button
                 key={l.label}
                 onClick={l.action}
-                className={`px-3.5 py-2 rounded-full transition-colors hover:text-white hover:bg-white/5 ${l.active ? 'text-white bg-white/10' : ''}`}
+                className={`px-3 lg:px-3.5 py-2 rounded-full transition-colors hover:text-white hover:bg-white/5 ${l.active ? 'text-white bg-white/10' : ''}`}
               >
                 {l.label}
               </button>
@@ -121,7 +124,7 @@ const Header = ({ page, navigate }: { page: Page; navigate: (p: Page, anchor?: s
               href={APP_STORE_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-4 py-2 rounded-full text-[14px] font-bold text-[#2a1206] bg-gradient-to-b from-[#ffb07a] to-[#f2865a] hover:brightness-110 transition shadow-[0_6px_20px_-6px_rgba(242,134,90,0.8)]"
+              className="whitespace-nowrap px-4 py-2 rounded-full text-[14px] font-bold text-[#2a1206] bg-gradient-to-b from-[#ffb07a] to-[#f2865a] hover:brightness-110 transition shadow-[0_6px_20px_-6px_rgba(242,134,90,0.8)]"
             >
               Get the app
             </a>
@@ -204,6 +207,79 @@ const extras = [
   { icon: Ban, title: 'Ad-free', body: 'No banners, no interruptions. Just your movies and shows.' },
   { icon: Globe, title: '9 languages', body: 'Including title art that follows your app language.' },
 ];
+
+const ipadShots = [
+  { src: '/img/ipad-browse.jpg', label: 'Browse', alt: 'Browse on iPad, featuring Carrie' },
+  { src: '/img/ipad-tonight.jpg', label: 'Tonight', alt: 'Tonight on iPad suggesting Avatar: Fire and Ash' },
+  { src: '/img/ipad-detail.jpg', label: 'Every rating', alt: 'The Dune: Part Two detail page on iPad' },
+  { src: '/img/ipad-streamq.jpg', label: 'StreamQ', alt: 'StreamQ on iPad with Leaving Soon' },
+  { src: '/img/ipad-lists.jpg', label: 'Your lists', alt: 'My Lists on iPad' },
+  { src: '/img/ipad-themes.jpg', label: 'Themes', alt: 'Themes on iPad with Creature Feature selected' },
+];
+
+const IPad = ({ src, alt }: { src: string; alt: string }) => (
+  <div className="phone rounded-[1.6rem] md:rounded-[2rem] p-[7px] md:p-[9px]">
+    <img
+      src={src}
+      alt={alt}
+      loading="lazy"
+      width={1400}
+      height={1867}
+      className="block w-full h-auto rounded-[1.2rem] md:rounded-[1.5rem]"
+    />
+  </div>
+);
+
+const IPadGallery = () => {
+  const track = useRef<HTMLDivElement>(null);
+  const [edges, setEdges] = useState({ start: true, end: false });
+
+  const update = () => {
+    const el = track.current;
+    if (!el) return;
+    setEdges({ start: el.scrollLeft < 8, end: el.scrollLeft + el.clientWidth > el.scrollWidth - 8 });
+  };
+
+  useEffect(() => {
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+
+  const step = (dir: 1 | -1) => {
+    const el = track.current;
+    const card = el?.querySelector('figure');
+    if (!el || !card) return;
+    el.scrollBy({ left: dir * (card.getBoundingClientRect().width + 32), behavior: 'smooth' });
+  };
+
+  const arrow = 'w-11 h-11 rounded-full glass flex items-center justify-center transition-opacity hover:bg-white/10 disabled:opacity-30 disabled:cursor-default';
+
+  return (
+    <div className="reveal mt-14">
+      <div
+        ref={track}
+        onScroll={update}
+        className="flex gap-5 md:gap-8 overflow-x-auto snap-x snap-mandatory no-scrollbar px-[max(1rem,calc((100vw-72rem)/2+1.5rem))] pb-6"
+      >
+        {ipadShots.map((shot) => (
+          <figure key={shot.src} className="snap-center shrink-0 w-[72vw] sm:w-[380px] md:w-[420px]">
+            <IPad src={shot.src} alt={shot.alt} />
+            <figcaption className="mt-4 text-center text-[15px] font-semibold text-[color:var(--muted)]">{shot.label}</figcaption>
+          </figure>
+        ))}
+      </div>
+      <div className="hidden md:flex justify-center gap-3 mt-4">
+        <button className={arrow} onClick={() => step(-1)} disabled={edges.start} aria-label="Previous iPad screenshot">
+          <ChevronLeft size={20} />
+        </button>
+        <button className={arrow} onClick={() => step(1)} disabled={edges.end} aria-label="Next iPad screenshot">
+          <ChevronRight size={20} />
+        </button>
+      </div>
+    </div>
+  );
+};
 
 const HomeView = () => (
   <>
@@ -296,6 +372,20 @@ const HomeView = () => (
           ))}
         </div>
       </div>
+    </section>
+
+    {/* iPad */}
+    <section id="ipad" className="relative py-20 md:py-32 overflow-hidden scroll-mt-24">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 text-center">
+        <div className="reveal text-[13px] font-bold uppercase tracking-[0.18em] text-[color:var(--coral)] mb-4">iPad</div>
+        <h2 className="reveal text-4xl md:text-6xl font-black tracking-[-0.035em] leading-[1.02]">
+          Room for <span className="text-coral">every poster.</span>
+        </h2>
+        <p className="reveal mt-6 text-lg md:text-xl text-[color:var(--muted)] max-w-2xl mx-auto leading-relaxed">
+          The whole app, laid out for the bigger screen. Same lists, same picks, wherever you are.
+        </p>
+      </div>
+      <IPadGallery />
     </section>
 
     {/* Apple TV */}
@@ -441,6 +531,7 @@ const Footer = ({ navigate }: { navigate: (p: Page, anchor?: string) => void }) 
       </button>
       <nav className="flex flex-wrap justify-center gap-x-7 gap-y-3 text-[15px] font-medium text-[color:var(--muted)]">
         <button onClick={() => navigate('/', 'features')} className="hover:text-white transition-colors">Features</button>
+        <button onClick={() => navigate('/', 'ipad')} className="hover:text-white transition-colors">iPad</button>
         <button onClick={() => navigate('/', 'apple-tv')} className="hover:text-white transition-colors">Apple TV</button>
         <button onClick={() => navigate('/privacy')} className="hover:text-white transition-colors">Privacy</button>
         <button onClick={() => navigate('/support')} className="hover:text-white transition-colors">Support</button>
