@@ -6,11 +6,17 @@ import {
   ChevronLeft,
   ChevronRight,
   Ban,
+  BarChart3,
   Check,
+  Film,
+  FolderOpen,
   Globe,
   Heart,
   LayoutGrid,
+  Link2,
   Mail,
+  MapPin,
+  MessagesSquare,
   Minus,
   Menu,
   ShieldCheck,
@@ -213,49 +219,55 @@ const extras = [
 type Mark = { v: 'yes' | 'no' | 'partial'; note?: string };
 
 // Competitor facts come from each app's US App Store listing and website (October 2026).
-const comparison: { feature: string; wg: Mark; letterboxd: Mark; justwatch: Mark }[] = [
+const comparison: { feature: string; wg: Mark; letterboxd: Mark; justwatch: Mark; trakt: Mark }[] = [
   {
     feature: 'Movies and TV shows',
     wg: { v: 'yes' },
     letterboxd: { v: 'partial', note: 'Films only' },
     justwatch: { v: 'yes' },
+    trakt: { v: 'yes' },
   },
   {
     feature: 'No third-party ads, for free',
     wg: { v: 'yes' },
     letterboxd: { v: 'no', note: 'Ads unless Pro' },
     justwatch: { v: 'no', note: 'Has ads' },
+    trakt: { v: 'no', note: 'Ads unless VIP' },
   },
   {
     feature: 'Show only your streaming services',
     wg: { v: 'yes' },
     letterboxd: { v: 'partial', note: 'Pro only' },
     justwatch: { v: 'yes' },
+    trakt: { v: 'partial', note: 'Sorts, not filters' },
   },
   {
     feature: 'IMDb, Rotten Tomatoes and Metacritic together',
     wg: { v: 'yes' },
     letterboxd: { v: 'no' },
     justwatch: { v: 'partial', note: 'No Metacritic' },
+    trakt: { v: 'no' },
   },
   {
     feature: 'Theme packs that restyle the app',
     wg: { v: 'yes' },
     letterboxd: { v: 'no' },
     justwatch: { v: 'no' },
+    trakt: { v: 'no' },
   },
   {
     feature: 'Apple TV app',
     wg: { v: 'yes' },
     letterboxd: { v: 'yes' },
     justwatch: { v: 'yes' },
+    trakt: { v: 'yes' },
   },
 ];
 
 const MarkCell = ({ mark, highlight = false }: { mark: Mark; highlight?: boolean }) => {
   const label = mark.v === 'yes' ? 'Yes' : mark.v === 'no' ? 'No' : 'Partly';
   return (
-    <td className={`px-1.5 sm:px-4 py-4 text-center align-middle ${highlight ? 'bg-[color:var(--coral)]/[0.07]' : ''}`}>
+    <td className={`px-0.5 sm:px-4 py-4 text-center align-middle ${highlight ? 'bg-[rgba(242,134,90,0.07)]' : ''}`}>
       <div className="flex flex-col items-center gap-1">
         {mark.v === 'yes' && (
           <span className={`w-7 h-7 rounded-full flex items-center justify-center ${highlight ? 'bg-[color:var(--coral)] text-[#2a1206]' : 'bg-white/10 text-white'}`}>
@@ -272,7 +284,7 @@ const MarkCell = ({ mark, highlight = false }: { mark: Mark; highlight?: boolean
             <X size={16} strokeWidth={2.5} aria-label={label} />
           </span>
         )}
-        {mark.note && <span className="text-[11px] sm:text-xs leading-tight text-[color:var(--muted)]">{mark.note}</span>}
+        {mark.note && <span className="text-[10px] sm:text-xs leading-tight text-[color:var(--muted)]">{mark.note}</span>}
       </div>
     </td>
   );
@@ -280,8 +292,8 @@ const MarkCell = ({ mark, highlight = false }: { mark: Mark; highlight?: boolean
 
 const ComparisonSection = () => (
   <section id="compare" className="py-20 md:py-28 scroll-mt-24">
-    <div className="max-w-4xl mx-auto px-4 sm:px-6">
-      <div className="text-center">
+    <div className="max-w-5xl mx-auto px-3 sm:px-6">
+      <div className="text-center px-1">
         <div className="reveal text-[13px] font-bold uppercase tracking-[0.18em] text-[color:var(--coral)] mb-4">Compare</div>
         <h2 className="reveal text-4xl md:text-6xl font-black tracking-[-0.035em] leading-[1.02]">
           Everything in <span className="text-coral">one place.</span>
@@ -292,42 +304,45 @@ const ComparisonSection = () => (
       </div>
       <div className="reveal mt-12 card rounded-[1.75rem] overflow-hidden">
         <table className="w-full table-fixed text-left">
-          <caption className="sr-only">WatchGuide compared with Letterboxd and JustWatch</caption>
+          <caption className="sr-only">WatchGuide compared with Letterboxd, JustWatch and Trakt</caption>
           <colgroup>
             <col />
-            <col className="w-[20%] sm:w-[19%]" />
-            <col className="w-[19%] sm:w-[18%]" />
-            <col className="w-[19%] sm:w-[18%]" />
+            <col className="w-[18%] sm:w-[16%]" />
+            <col className="w-[16%] sm:w-[15%]" />
+            <col className="w-[16%] sm:w-[15%]" />
+            <col className="w-[16%] sm:w-[15%]" />
           </colgroup>
           <thead>
             <tr className="border-b border-white/[0.07]">
               <th scope="col" className="px-4 sm:px-6 py-5 text-[13px] font-semibold text-[color:var(--muted)]">
                 <span className="sr-only">Feature</span>
               </th>
-              <th scope="col" className="px-1.5 sm:px-4 py-5 bg-[color:var(--coral)]/[0.07]">
+              <th scope="col" className="px-1.5 sm:px-4 py-5 bg-[rgba(242,134,90,0.07)]">
                 <div className="flex flex-col items-center gap-2">
                   <AppIcon className="w-8 h-8 sm:w-10 sm:h-10" />
                   <span className="text-[11px] sm:text-sm font-bold">WatchGuide</span>
                 </div>
               </th>
-              <th scope="col" className="px-1.5 sm:px-4 py-5 text-[11px] sm:text-sm font-semibold text-center text-white/80">Letterboxd</th>
-              <th scope="col" className="px-1.5 sm:px-4 py-5 text-[11px] sm:text-sm font-semibold text-center text-white/80">JustWatch</th>
+              <th scope="col" className="px-1.5 sm:px-4 py-5 text-[11px] sm:text-sm font-semibold text-center text-white/80 hyphens-manual break-words">Letter&shy;boxd</th>
+              <th scope="col" className="px-1.5 sm:px-4 py-5 text-[11px] sm:text-sm font-semibold text-center text-white/80 hyphens-manual break-words">Just&shy;Watch</th>
+              <th scope="col" className="px-1.5 sm:px-4 py-5 text-[11px] sm:text-sm font-semibold text-center text-white/80">Trakt</th>
             </tr>
           </thead>
           <tbody>
             {comparison.map((row) => (
               <tr key={row.feature} className="border-b border-white/[0.05] last:border-0">
-                <th scope="row" className="pl-4 pr-1 sm:px-6 py-4 text-[14px] sm:text-[16px] font-semibold leading-snug">{row.feature}</th>
+                <th scope="row" className="pl-3.5 pr-1 sm:px-6 py-4 text-[13px] sm:text-[16px] font-semibold leading-snug">{row.feature}</th>
                 <MarkCell mark={row.wg} highlight />
                 <MarkCell mark={row.letterboxd} />
                 <MarkCell mark={row.justwatch} />
+                <MarkCell mark={row.trakt} />
               </tr>
             ))}
           </tbody>
         </table>
       </div>
       <p className="reveal mt-5 text-center text-xs text-white/40 leading-relaxed max-w-2xl mx-auto">
-        Based on each app's US App Store listing and website as of October 2026. Letterboxd and JustWatch are trademarks of their respective owners and are not affiliated with WatchGuide.
+        Based on each app's US App Store listing and website as of October 2026. Letterboxd, JustWatch and Trakt are trademarks of their respective owners and are not affiliated with WatchGuide.
       </p>
     </div>
   </section>
@@ -354,6 +369,17 @@ const IPad = ({ src, alt }: { src: string; alt: string }) => (
     />
   </div>
 );
+
+// Mirrors the benefit list on the in-app paywall (WGUnlimitedPaywallView.swift).
+const proBenefits = [
+  { icon: MessagesSquare, title: 'Ask Atlas anything', body: 'Unlimited questions about any film or show.' },
+  { icon: Film, title: 'Post-credits checks', body: 'Know before you leave your seat.' },
+  { icon: MapPin, title: 'Cinema trip planning', body: 'Live traffic tells you when to leave.' },
+  { icon: FolderOpen, title: 'Unlimited lists', body: 'Organize everything, no cap.' },
+  { icon: Sparkles, title: 'AI playlists & share cards', body: 'Curated picks worth sharing.' },
+  { icon: BarChart3, title: 'Stats & insights', body: 'Your watching, properly measured.' },
+  { icon: Link2, title: 'Instant deep links', body: 'Jump straight into the right app.' },
+];
 
 const IPadGallery = () => {
   const track = useRef<HTMLDivElement>(null);
@@ -488,7 +514,7 @@ const HomeView = () => (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {extras.map(({ icon: Icon, title, body }) => (
             <div key={title} className="reveal card rounded-3xl p-7">
-              <div className="w-11 h-11 rounded-2xl bg-[color:var(--coral)]/15 text-[color:var(--coral)] flex items-center justify-center mb-5">
+              <div className="w-11 h-11 rounded-2xl bg-[rgba(242,134,90,0.15)] text-[color:var(--coral)] flex items-center justify-center mb-5">
                 <Icon size={22} />
               </div>
               <h3 className="text-lg font-bold mb-2">{title}</h3>
@@ -549,29 +575,49 @@ const HomeView = () => (
     </section>
 
     {/* Pro */}
-    <section className="py-16 md:py-24">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6">
-        <div className="reveal card rounded-[2rem] p-8 md:p-14 text-center relative overflow-hidden">
-          <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-[radial-gradient(circle,rgba(242,134,90,0.25),transparent_70%)] blur-2xl" />
+    <section id="pro" className="py-16 md:py-24 scroll-mt-24">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6">
+        <div className="reveal card rounded-[2rem] p-6 sm:p-8 md:p-14 relative overflow-hidden">
+          <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[600px] h-[340px] bg-[radial-gradient(circle,rgba(242,134,90,0.25),transparent_70%)] blur-2xl" />
           <div className="relative">
-            <div className="text-[13px] font-bold uppercase tracking-[0.18em] text-[color:var(--coral)] mb-4">WatchGuide Pro</div>
-            <h2 className="text-3xl md:text-5xl font-black tracking-[-0.035em]">Unlock everything.</h2>
-            <p className="mt-5 text-lg text-[color:var(--muted)] max-w-xl mx-auto leading-relaxed">
-              Start free, then go Pro when you're ready. Theme packs are optional one-time purchases.
-            </p>
-            <div className="mt-9 grid sm:grid-cols-2 gap-4 max-w-lg mx-auto">
-              <div className="rounded-2xl p-6 bg-white/[0.04] ring-1 ring-white/10">
+            <div className="text-center">
+              <div className="text-[13px] font-bold uppercase tracking-[0.18em] text-[color:var(--coral)] mb-4">WatchGuide Pro</div>
+              <h2 className="text-3xl md:text-5xl font-black tracking-[-0.035em]">Never wonder <span className="text-coral">what's next.</span></h2>
+              <p className="mt-5 text-lg text-[color:var(--muted)] max-w-xl mx-auto leading-relaxed">
+                Ask Atlas anything, plan every cinema trip, and see your watching like never before.
+              </p>
+            </div>
+
+            <ul className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 text-left">
+              {proBenefits.map(({ icon: Icon, title, body }, i) => (
+                <li
+                  key={title}
+                  className={`rounded-2xl p-5 ring-1 flex gap-4 ${i === 0 ? 'sm:col-span-2 lg:col-span-1 lg:row-span-3 lg:flex-col lg:justify-center lg:p-8 bg-[rgba(242,134,90,0.08)] ring-[rgba(242,134,90,0.3)]' : 'bg-white/[0.04] ring-white/[0.08]'}`}
+                >
+                  <div className={`shrink-0 rounded-xl flex items-center justify-center bg-[rgba(242,134,90,0.15)] text-[color:var(--coral)] ${i === 0 ? 'w-12 h-12' : 'w-10 h-10'}`}>
+                    <Icon size={i === 0 ? 24 : 20} />
+                  </div>
+                  <div>
+                    <h3 className={`font-bold ${i === 0 ? 'text-xl' : 'text-[16px]'}`}>{title}</h3>
+                    <p className="mt-1 text-[15px] text-[color:var(--muted)] leading-relaxed">{body}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+
+            <div className="mt-10 grid grid-cols-2 gap-3 md:gap-4 max-w-lg mx-auto text-center">
+              <div className="rounded-2xl p-5 md:p-6 bg-white/[0.04] ring-1 ring-white/10">
                 <div className="text-sm font-semibold text-[color:var(--muted)]">Monthly</div>
-                <div className="mt-1 text-3xl font-black">$4.99</div>
+                <div className="mt-1 text-2xl md:text-3xl font-black">$4.99</div>
                 <div className="text-sm text-[color:var(--muted)]">per month</div>
               </div>
-              <div className="rounded-2xl p-6 bg-[color:var(--coral)]/10 ring-1 ring-[color:var(--coral)]/40">
+              <div className="rounded-2xl p-5 md:p-6 bg-[rgba(242,134,90,0.1)] ring-1 ring-[rgba(242,134,90,0.4)]">
                 <div className="text-sm font-semibold text-[color:var(--peach)]">Yearly</div>
-                <div className="mt-1 text-3xl font-black">$29.99</div>
+                <div className="mt-1 text-2xl md:text-3xl font-black">$29.99</div>
                 <div className="text-sm text-[color:var(--muted)]">per year</div>
               </div>
             </div>
-            <p className="mt-5 text-xs text-white/40">US prices. May vary by country.</p>
+            <p className="mt-5 text-center text-xs text-white/40">US prices. May vary by country. Theme packs are optional one-time purchases.</p>
           </div>
         </div>
       </div>
@@ -603,7 +649,7 @@ const PageShell = ({ back, children }: { back: () => void; children: React.React
 
 const SupportView = ({ back }: { back: () => void }) => (
   <PageShell back={back}>
-    <div className="w-16 h-16 rounded-2xl bg-[color:var(--coral)]/15 text-[color:var(--coral)] flex items-center justify-center mb-8">
+    <div className="w-16 h-16 rounded-2xl bg-[rgba(242,134,90,0.15)] text-[color:var(--coral)] flex items-center justify-center mb-8">
       <Mail size={30} />
     </div>
     <h1 className="text-5xl md:text-6xl font-black tracking-[-0.04em]">How can we help?</h1>
