@@ -18,9 +18,6 @@ import {
 const APP_STORE_URL = 'https://apps.apple.com/us/app/watchguide-app/id6758427085';
 const SUPPORT_EMAIL = 'watchguide@jasonforreels.com';
 
-// Lets the address wrap after the @ on narrow screens instead of mid-word.
-const EmailText = () => <>watchguide@<wbr />jasonforreels.com</>;
-
 type Page = '/' | '/support' | '/privacy';
 
 // Hash routes. The app links to #/privacy; #/privacy-policy is kept for older links.
@@ -395,10 +392,10 @@ const SupportView = ({ back }: { back: () => void }) => (
     </p>
     <a
       href={`mailto:${SUPPORT_EMAIL}`}
-      className="mt-10 card rounded-3xl p-6 md:p-8 flex items-center justify-between gap-4 group hover:bg-white/[0.06] transition-colors"
+      className="mt-10 card rounded-3xl px-5 py-6 sm:p-6 md:p-8 flex items-center justify-between gap-3 sm:gap-4 group hover:bg-white/[0.06] transition-colors"
     >
-      <span className="text-xl sm:text-2xl md:text-3xl font-bold text-coral"><EmailText /></span>
-      <ArrowUpRight className="shrink-0 text-[color:var(--muted)] group-hover:text-white transition-colors" />
+      <span className="whitespace-nowrap text-[min(4.8vw,1.875rem)] font-bold text-coral">{SUPPORT_EMAIL}</span>
+      <ArrowUpRight className="hidden sm:block shrink-0 text-[color:var(--muted)] group-hover:text-white transition-colors" />
     </a>
     <div className="mt-6 card rounded-3xl p-6 md:p-8">
       <h2 className="text-lg font-bold mb-2">Subscriptions</h2>
@@ -426,7 +423,7 @@ const PrivacyView = ({ back }: { back: () => void }) => (
         We do not sell, rent or trade your data with advertising networks or external data brokers.
       </p>
       <p>
-        Questions about your privacy? Email <a className="text-white underline decoration-[color:var(--coral)] underline-offset-4" href={`mailto:${SUPPORT_EMAIL}`}><EmailText /></a>.
+        Questions about your privacy? Email <a className="whitespace-nowrap text-[min(4.8vw,1em)] text-white underline decoration-[color:var(--coral)] underline-offset-4" href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>.
       </p>
     </div>
   </PageShell>
