@@ -295,8 +295,8 @@ const SupportView = ({ back }: { back: () => void }) => (
       <p className="text-zinc-400 text-2xl leading-relaxed mb-10 font-medium">
         Encountered a bug or have a feature request? Reach out to our dedicated support team and we'll get back to you within 24 hours.
       </p>
-      <a href="mailto:support@watchguide.app" className="text-3xl font-black text-purple-400 hover:text-purple-300 transition-colors">
-        support@watchguide.app
+      <a href="mailto:watchguide@jasonforreels.com" className="text-3xl font-black text-purple-400 hover:text-purple-300 transition-colors">
+        watchguide@jasonforreels.com
       </a>
     </div>
   </div>
@@ -424,7 +424,7 @@ const App = () => {
           </nav>
           <div className="flex flex-col items-center gap-6">
             <AppStoreButton />
-            <p className="text-zinc-600 text-xs font-bold uppercase tracking-[0.2em]">© 2026 WatchGuide App. Developed for Cinema Lovers.</p>
+            <p className="text-zinc-600 text-xs font-bold uppercase tracking-[0.2em]">© 2026 Jason Smith. All rights reserved.</p>
           </div>
         </div>
       </footer>
