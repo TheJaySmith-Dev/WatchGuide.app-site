@@ -11,7 +11,6 @@ import {
   Menu,
   ShieldCheck,
   Sparkles,
-  Tv,
   X,
 } from 'lucide-react';
 
@@ -303,9 +302,13 @@ const HomeView = () => (
     <section id="apple-tv" className="relative py-20 md:py-32 overflow-hidden scroll-mt-24">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_60%,rgba(98,76,214,0.3),transparent_70%)]" />
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 text-center">
-        <div className="reveal inline-flex items-center gap-2 text-[13px] font-bold uppercase tracking-[0.18em] text-[color:var(--coral)] mb-4">
-          <Tv size={16} /> Apple TV
-        </div>
+        <img
+          src="/img/apple-tv.png"
+          alt="Apple TV"
+          width={256}
+          height={256}
+          className="reveal mx-auto mb-7 w-16 h-16 md:w-20 md:h-20 rounded-[22%] ring-1 ring-white/15 shadow-[0_12px_40px_-8px_rgba(0,0,0,0.8)]"
+        />
         <h2 className="reveal text-4xl md:text-6xl font-black tracking-[-0.035em] leading-[1.02]">
           Your cinema, on the <span className="text-coral">big screen.</span>
         </h2>
