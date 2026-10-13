@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
   ArrowLeft,
+  ArrowLeftRight,
   ArrowUpRight,
   ChevronLeft,
   ChevronRight,
@@ -340,6 +341,17 @@ const ComparisonSection = () => (
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="reveal mt-6 card rounded-[1.5rem] px-5 py-5 sm:px-7 flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
+        <div className="shrink-0 w-11 h-11 rounded-2xl bg-[rgba(242,134,90,0.15)] text-[color:var(--coral)] flex items-center justify-center">
+          <ArrowLeftRight size={22} />
+        </div>
+        <div>
+          <h3 className="text-lg font-bold">Works with Trakt and Simkl</h3>
+          <p className="mt-1 text-[15px] text-[color:var(--muted)] leading-relaxed">
+            Already tracking somewhere else? Connect your account to bring your history over and keep your lists in sync.
+          </p>
+        </div>
       </div>
       <p className="reveal mt-5 text-center text-xs text-white/40 leading-relaxed max-w-2xl mx-auto">
         Based on each app's US App Store listing and website as of October 2026. Letterboxd, JustWatch and Trakt are trademarks of their respective owners and are not affiliated with WatchGuide.
