@@ -6,10 +6,12 @@ import {
   ChevronLeft,
   ChevronRight,
   Ban,
+  Check,
   Globe,
   Heart,
   LayoutGrid,
   Mail,
+  Minus,
   Menu,
   ShieldCheck,
   Sparkles,
@@ -208,6 +210,129 @@ const extras = [
   { icon: Globe, title: '9 languages', body: 'Including title art that follows your app language.' },
 ];
 
+type Mark = { v: 'yes' | 'no' | 'partial'; note?: string };
+
+// Competitor facts come from each app's US App Store listing and website (October 2026).
+const comparison: { feature: string; wg: Mark; letterboxd: Mark; justwatch: Mark }[] = [
+  {
+    feature: 'Movies and TV shows',
+    wg: { v: 'yes' },
+    letterboxd: { v: 'partial', note: 'Films only' },
+    justwatch: { v: 'yes' },
+  },
+  {
+    feature: 'No third-party ads, for free',
+    wg: { v: 'yes' },
+    letterboxd: { v: 'no', note: 'Ads unless Pro' },
+    justwatch: { v: 'no', note: 'Has ads' },
+  },
+  {
+    feature: 'Show only your streaming services',
+    wg: { v: 'yes' },
+    letterboxd: { v: 'partial', note: 'Pro only' },
+    justwatch: { v: 'yes' },
+  },
+  {
+    feature: 'IMDb, Rotten Tomatoes and Metacritic together',
+    wg: { v: 'yes' },
+    letterboxd: { v: 'no' },
+    justwatch: { v: 'partial', note: 'No Metacritic' },
+  },
+  {
+    feature: 'Theme packs that restyle the app',
+    wg: { v: 'yes' },
+    letterboxd: { v: 'no' },
+    justwatch: { v: 'no' },
+  },
+  {
+    feature: 'Apple TV app',
+    wg: { v: 'yes' },
+    letterboxd: { v: 'yes' },
+    justwatch: { v: 'yes' },
+  },
+];
+
+const MarkCell = ({ mark, highlight = false }: { mark: Mark; highlight?: boolean }) => {
+  const label = mark.v === 'yes' ? 'Yes' : mark.v === 'no' ? 'No' : 'Partly';
+  return (
+    <td className={`px-1.5 sm:px-4 py-4 text-center align-middle ${highlight ? 'bg-[color:var(--coral)]/[0.07]' : ''}`}>
+      <div className="flex flex-col items-center gap-1">
+        {mark.v === 'yes' && (
+          <span className={`w-7 h-7 rounded-full flex items-center justify-center ${highlight ? 'bg-[color:var(--coral)] text-[#2a1206]' : 'bg-white/10 text-white'}`}>
+            <Check size={16} strokeWidth={3} aria-label={label} />
+          </span>
+        )}
+        {mark.v === 'partial' && (
+          <span className="w-7 h-7 rounded-full flex items-center justify-center bg-white/[0.06] text-white/60">
+            <Minus size={16} strokeWidth={3} aria-label={label} />
+          </span>
+        )}
+        {mark.v === 'no' && (
+          <span className="w-7 h-7 rounded-full flex items-center justify-center text-white/30">
+            <X size={16} strokeWidth={2.5} aria-label={label} />
+          </span>
+        )}
+        {mark.note && <span className="text-[11px] sm:text-xs leading-tight text-[color:var(--muted)]">{mark.note}</span>}
+      </div>
+    </td>
+  );
+};
+
+const ComparisonSection = () => (
+  <section id="compare" className="py-20 md:py-28 scroll-mt-24">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6">
+      <div className="text-center">
+        <div className="reveal text-[13px] font-bold uppercase tracking-[0.18em] text-[color:var(--coral)] mb-4">Compare</div>
+        <h2 className="reveal text-4xl md:text-6xl font-black tracking-[-0.035em] leading-[1.02]">
+          Everything in <span className="text-coral">one place.</span>
+        </h2>
+        <p className="reveal mt-6 text-lg md:text-xl text-[color:var(--muted)] max-w-2xl mx-auto leading-relaxed">
+          Other apps do one part well. WatchGuide brings tracking, ratings and streaming together, without the ads.
+        </p>
+      </div>
+      <div className="reveal mt-12 card rounded-[1.75rem] overflow-hidden">
+        <table className="w-full table-fixed text-left">
+          <caption className="sr-only">WatchGuide compared with Letterboxd and JustWatch</caption>
+          <colgroup>
+            <col />
+            <col className="w-[20%] sm:w-[19%]" />
+            <col className="w-[19%] sm:w-[18%]" />
+            <col className="w-[19%] sm:w-[18%]" />
+          </colgroup>
+          <thead>
+            <tr className="border-b border-white/[0.07]">
+              <th scope="col" className="px-4 sm:px-6 py-5 text-[13px] font-semibold text-[color:var(--muted)]">
+                <span className="sr-only">Feature</span>
+              </th>
+              <th scope="col" className="px-1.5 sm:px-4 py-5 bg-[color:var(--coral)]/[0.07]">
+                <div className="flex flex-col items-center gap-2">
+                  <AppIcon className="w-8 h-8 sm:w-10 sm:h-10" />
+                  <span className="text-[11px] sm:text-sm font-bold">WatchGuide</span>
+                </div>
+              </th>
+              <th scope="col" className="px-1.5 sm:px-4 py-5 text-[11px] sm:text-sm font-semibold text-center text-white/80">Letterboxd</th>
+              <th scope="col" className="px-1.5 sm:px-4 py-5 text-[11px] sm:text-sm font-semibold text-center text-white/80">JustWatch</th>
+            </tr>
+          </thead>
+          <tbody>
+            {comparison.map((row) => (
+              <tr key={row.feature} className="border-b border-white/[0.05] last:border-0">
+                <th scope="row" className="pl-4 pr-1 sm:px-6 py-4 text-[14px] sm:text-[16px] font-semibold leading-snug">{row.feature}</th>
+                <MarkCell mark={row.wg} highlight />
+                <MarkCell mark={row.letterboxd} />
+                <MarkCell mark={row.justwatch} />
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p className="reveal mt-5 text-center text-xs text-white/40 leading-relaxed max-w-2xl mx-auto">
+        Based on each app's US App Store listing and website as of October 2026. Letterboxd and JustWatch are trademarks of their respective owners and are not affiliated with WatchGuide.
+      </p>
+    </div>
+  </section>
+);
+
 const ipadShots = [
   { src: '/img/ipad-browse.jpg', label: 'Browse', alt: 'Browse on iPad, featuring Carrie' },
   { src: '/img/ipad-tonight.jpg', label: 'Tonight', alt: 'Tonight on iPad suggesting Avatar: Fire and Ash' },
@@ -373,6 +498,8 @@ const HomeView = () => (
         </div>
       </div>
     </section>
+
+    <ComparisonSection />
 
     {/* iPad */}
     <section id="ipad" className="relative py-20 md:py-32 overflow-hidden scroll-mt-24">
