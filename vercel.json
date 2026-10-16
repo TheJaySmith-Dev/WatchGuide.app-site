@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/api/justwatch/:path*", "destination": "/api/justwatch?jwpath=:path*" }
+  ]
+}
