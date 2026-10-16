@@ -12,12 +12,12 @@ export default {
     if (!key) return Response.json({ error: 'RAPIDAPI_KEY is not set' }, { status: 500 });
 
     const url = new URL(request.url);
-    const path = url.pathname.replace(/^\/api\/justwatch\/?/, '');
-    if (!path || path.includes('..')) {
+    // Upstream paths are /api/justwatch/v1/*, the same as this route's.
+    if (!url.pathname.startsWith('/api/justwatch/v1/') || url.pathname.includes('..')) {
       return Response.json({ error: 'Bad path' }, { status: 400 });
     }
 
-    const upstream = await fetch(`https://${HOST}/${path}${url.search}`, {
+    const upstream = await fetch(`https://${HOST}${url.pathname}${url.search}`, {
       headers: { 'x-rapidapi-key': key, 'x-rapidapi-host': HOST },
     });
     return new Response(upstream.body, {
