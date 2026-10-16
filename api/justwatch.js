@@ -11,13 +11,16 @@ export default {
     const key = process.env.RAPIDAPI_KEY;
     if (!key) return Response.json({ error: 'RAPIDAPI_KEY is not set' }, { status: 500 });
 
+    // vercel.json rewrites /api/justwatch/v1/x to /api/justwatch?jwpath=v1/x (catch-all files only match one segment).
     const url = new URL(request.url);
-    // Upstream paths are /api/justwatch/v1/*, the same as this route's.
-    if (!url.pathname.startsWith('/api/justwatch/v1/') || url.pathname.includes('..')) {
+    const path = url.searchParams.get('jwpath') || '';
+    url.searchParams.delete('jwpath');
+    if (!path.startsWith('v1/') || path.includes('..')) {
       return Response.json({ error: 'Bad path' }, { status: 400 });
     }
+    const search = url.searchParams.toString();
 
-    const upstream = await fetch(`https://${HOST}${url.pathname}${url.search}`, {
+    const upstream = await fetch(`https://${HOST}/api/justwatch/${path}${search ? `?${search}` : ''}`, {
       headers: { 'x-rapidapi-key': key, 'x-rapidapi-host': HOST },
     });
     return new Response(upstream.body, {
