@@ -1,5 +1,6 @@
 {
   "rewrites": [
+    { "source": "/(terms|privacy|refunds|support)", "destination": "/index.html" },
     { "source": "/api/justwatch/:path*", "destination": "/api/justwatch?jwpath=:path*" }
   ]
 }

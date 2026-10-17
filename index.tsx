@@ -28,13 +28,16 @@ import {
 const APP_STORE_URL = 'https://apps.apple.com/us/app/watchguide-app/id6758427085';
 const SUPPORT_EMAIL = 'watchguide@jasonforreels.com';
 
-type Page = '/' | '/support' | '/privacy';
+type Page = '/' | '/support' | '/privacy' | '/terms' | '/refunds';
 
 // Hash routes. The app links to #/privacy; #/privacy-policy is kept for older links.
+// Clean paths (/terms, /privacy, /refunds, /support) resolve too, for payment-provider review.
 const routeFromHash = (): Page => {
-  const hash = window.location.hash.replace('#', '');
+  const hash = window.location.hash.replace('#', '') || window.location.pathname.replace(/\/+$/, '');
   if (hash === '/support') return '/support';
   if (hash === '/privacy' || hash === '/privacy-policy') return '/privacy';
+  if (hash === '/terms') return '/terms';
+  if (hash === '/refunds' || hash === '/refund-policy') return '/refunds';
   return '/';
 };
 
@@ -701,8 +704,78 @@ const PrivacyView = ({ back }: { back: () => void }) => (
         We do not sell, rent or trade your data with advertising networks or external data brokers.
       </p>
       <p>
+        If you create an account or turn on sync, your lists, ratings, watch history and settings are stored with our backend provider (Supabase) so they follow you between devices, and are used only to provide that sync. Web subscriptions are processed by Paddle (merchant of record) and entitlements are managed by RevenueCat; they receive only the data needed to take payment and unlock Pro, and we never see your full card details. Title and artwork data comes from TMDB and streaming-availability providers; searches you make may be sent to them to return results.
+      </p>
+      <p>
+        You can ask us to delete your data at any time by email.
+      </p>
+      <p>
         Questions about your privacy? Email <a className="whitespace-nowrap text-[min(4.8vw,1em)] text-white underline decoration-[color:var(--coral)] underline-offset-4" href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>.
       </p>
+    </div>
+  </PageShell>
+);
+
+const mail = (
+  <a className="whitespace-nowrap text-[min(4.8vw,1em)] text-white underline decoration-[color:var(--coral)] underline-offset-4" href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
+);
+
+const LegalSection = ({ title, children }: { title: string; children: React.ReactNode }) => (
+  <section className="space-y-3">
+    <h2 className="text-white text-xl font-bold">{title}</h2>
+    {children}
+  </section>
+);
+
+const TermsView = ({ back }: { back: () => void }) => (
+  <PageShell back={back}>
+    <h1 className="text-5xl md:text-6xl font-black tracking-[-0.04em]">Terms of Service</h1>
+    <p className="mt-4 text-[color:var(--muted)]">Last updated: October 2026</p>
+    <div className="mt-10 card rounded-3xl p-7 md:p-10 space-y-8 text-lg text-[color:var(--muted)] leading-relaxed">
+      <LegalSection title="Who we are">
+        <p>WatchGuide is operated by Jason Smith (&ldquo;we&rdquo;, &ldquo;us&rdquo;). These terms cover the WatchGuide apps for iPhone, iPad, Apple TV and the web at app.watchguide.app. By using WatchGuide you agree to them.</p>
+      </LegalSection>
+      <LegalSection title="Using WatchGuide">
+        <p>WatchGuide helps you track movies and TV shows and find where to watch them. You must follow applicable law and not misuse, scrape, or attempt to disrupt the service. Title information is provided by third-party sources and may be incomplete or change; we do not guarantee that a title is available on any streaming service.</p>
+      </LegalSection>
+      <LegalSection title="WatchGuide Pro">
+        <p>WatchGuide Pro is an optional paid subscription that unlocks extra features. Subscriptions bought in the iOS app are billed by Apple and managed in your Apple Account. Subscriptions bought on the web are processed by our payment provider Paddle, which is the merchant of record and handles payment, tax and invoices.</p>
+        <p>Subscriptions renew automatically at the end of each billing period (monthly or annual) until cancelled. You can cancel at any time and keep access until the end of the period you paid for. Prices are shown before you pay and may change with notice before your next renewal. See our <a className="text-white underline decoration-[color:var(--coral)] underline-offset-4" href="#/refunds">Refund Policy</a>.</p>
+      </LegalSection>
+      <LegalSection title="Your content and data">
+        <p>Your lists, ratings and watch history belong to you. How we handle your data is described in the <a className="text-white underline decoration-[color:var(--coral)] underline-offset-4" href="#/privacy">Privacy Policy</a>.</p>
+      </LegalSection>
+      <LegalSection title="Third-party services">
+        <p>WatchGuide uses data from third parties such as TMDB and streaming-availability providers. Their names and logos belong to their owners. This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
+      </LegalSection>
+      <LegalSection title="Disclaimer and liability">
+        <p>WatchGuide is provided &ldquo;as is&rdquo; without warranties of any kind. To the extent permitted by law, we are not liable for indirect or consequential losses, and our total liability for any claim is limited to the amount you paid us in the 12 months before the claim.</p>
+      </LegalSection>
+      <LegalSection title="Changes and contact">
+        <p>We may update these terms; continued use after a change means you accept it. Questions? Email {mail}.</p>
+      </LegalSection>
+    </div>
+  </PageShell>
+);
+
+const RefundsView = ({ back }: { back: () => void }) => (
+  <PageShell back={back}>
+    <h1 className="text-5xl md:text-6xl font-black tracking-[-0.04em]">Refund Policy</h1>
+    <p className="mt-4 text-[color:var(--muted)]">Last updated: October 2026</p>
+    <div className="mt-10 card rounded-3xl p-7 md:p-10 space-y-8 text-lg text-[color:var(--muted)] leading-relaxed">
+      <LegalSection title="Web purchases (Paddle)">
+        <p>If you bought WatchGuide Pro on the web, you can request a full refund within 14 days of your purchase or renewal, no questions asked. Email {mail} with the email address used at checkout, or request it through Paddle using the link in your receipt.</p>
+        <p>After 14 days, payments are generally non-refundable, but you can cancel at any time and keep access until the end of the paid period.</p>
+      </LegalSection>
+      <LegalSection title="App Store purchases (Apple)">
+        <p>Purchases made in the iOS app are handled by Apple, and refunds are decided by Apple. Request one at reportaproblem.apple.com.</p>
+      </LegalSection>
+      <LegalSection title="Cancelling">
+        <p>Web subscriptions: use the cancellation link in your Paddle receipt email, or email us and we will cancel it for you. App Store subscriptions: Settings &rarr; your name &rarr; Subscriptions on your iPhone. Cancelling stops future renewals.</p>
+      </LegalSection>
+      <LegalSection title="Statutory rights">
+        <p>Nothing here limits any refund or withdrawal rights you have under the consumer law where you live.</p>
+      </LegalSection>
     </div>
   </PageShell>
 );
@@ -719,8 +792,9 @@ const Footer = ({ navigate }: { navigate: (p: Page, anchor?: string) => void }) 
         <button onClick={() => navigate('/', 'ipad')} className="hover:text-white transition-colors">iPad</button>
         <button onClick={() => navigate('/', 'apple-tv')} className="hover:text-white transition-colors">Apple TV</button>
         <button onClick={() => navigate('/privacy')} className="hover:text-white transition-colors">Privacy</button>
+        <button onClick={() => navigate('/terms')} className="hover:text-white transition-colors">Terms</button>
+        <button onClick={() => navigate('/refunds')} className="hover:text-white transition-colors">Refunds</button>
         <button onClick={() => navigate('/support')} className="hover:text-white transition-colors">Support</button>
-        <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Terms</a>
       </nav>
       <p className="text-[13px] text-white/40 flex items-center gap-1.5">
         © 2026 Jason Smith. Made with <Heart size={12} className="fill-current" /> for movie lovers.
@@ -746,8 +820,9 @@ const App = () => {
       return;
     }
     if (p === '/') {
-      history.pushState(null, '', window.location.pathname);
+      history.pushState(null, '', '/');
     } else {
+      history.pushState(null, '', '/');
       window.location.hash = p;
     }
     setPage(p);
@@ -765,6 +840,8 @@ const App = () => {
         {page === '/' && <HomeView />}
         {page === '/support' && <SupportView back={() => navigate('/')} />}
         {page === '/privacy' && <PrivacyView back={() => navigate('/')} />}
+        {page === '/terms' && <TermsView back={() => navigate('/')} />}
+        {page === '/refunds' && <RefundsView back={() => navigate('/')} />}
       </main>
       <Footer navigate={navigate} />
     </div>
