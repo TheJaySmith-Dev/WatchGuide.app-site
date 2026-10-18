@@ -30,8 +30,8 @@ const SUPPORT_EMAIL = 'watchguide@jasonforreels.com';
 
 type Page = '/' | '/support' | '/privacy' | '/terms' | '/refunds';
 
-// Hash routes. The app links to #/privacy; #/privacy-policy is kept for older links.
-// Clean paths (/terms, /privacy, /refunds, /support) resolve too, for payment-provider review.
+// Clean paths (/terms, /privacy, /refunds, /support) are canonical. Old hash links
+// (#/privacy, #/privacy-policy, ...) still resolve and are rewritten to the clean path.
 const routeFromHash = (): Page => {
   const hash = window.location.hash.replace('#', '') || window.location.pathname.replace(/\/+$/, '');
   if (hash === '/support') return '/support';
@@ -740,10 +740,10 @@ const TermsView = ({ back }: { back: () => void }) => (
       </LegalSection>
       <LegalSection title="WatchGuide Pro">
         <p>WatchGuide Pro is an optional paid subscription that unlocks extra features. Subscriptions bought in the iOS app are billed by Apple and managed in your Apple Account. Subscriptions bought on the web are processed by our payment provider Paddle, which is the merchant of record and handles payment, tax and invoices.</p>
-        <p>Subscriptions renew automatically at the end of each billing period (monthly or annual) until cancelled. You can cancel at any time and keep access until the end of the period you paid for. Prices are shown before you pay and may change with notice before your next renewal. See our <a className="text-white underline decoration-[color:var(--coral)] underline-offset-4" href="#/refunds">Refund Policy</a>.</p>
+        <p>Subscriptions renew automatically at the end of each billing period (monthly or annual) until cancelled. You can cancel at any time and keep access until the end of the period you paid for. Prices are shown before you pay and may change with notice before your next renewal. See our <a className="text-white underline decoration-[color:var(--coral)] underline-offset-4" href="/refunds">Refund Policy</a>.</p>
       </LegalSection>
       <LegalSection title="Your content and data">
-        <p>Your lists, ratings and watch history belong to you. How we handle your data is described in the <a className="text-white underline decoration-[color:var(--coral)] underline-offset-4" href="#/privacy">Privacy Policy</a>.</p>
+        <p>Your lists, ratings and watch history belong to you. How we handle your data is described in the <a className="text-white underline decoration-[color:var(--coral)] underline-offset-4" href="/privacy">Privacy Policy</a>.</p>
       </LegalSection>
       <LegalSection title="Third-party services">
         <p>WatchGuide uses data from third parties such as TMDB and streaming-availability providers. Their names and logos belong to their owners. This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
@@ -807,9 +807,19 @@ const App = () => {
   const [page, setPage] = useState<Page>(routeFromHash);
 
   useEffect(() => {
-    const onHash = () => setPage(routeFromHash());
-    window.addEventListener('hashchange', onHash);
-    return () => window.removeEventListener('hashchange', onHash);
+    // Turn a legacy #/route into its clean path without adding a history entry.
+    const normalize = () => {
+      const next = routeFromHash();
+      if (window.location.hash && next !== '/') history.replaceState(null, '', next);
+      setPage(next);
+    };
+    normalize();
+    window.addEventListener('hashchange', normalize);
+    window.addEventListener('popstate', normalize);
+    return () => {
+      window.removeEventListener('hashchange', normalize);
+      window.removeEventListener('popstate', normalize);
+    };
   }, []);
 
   useReveal([page]);
@@ -819,12 +829,7 @@ const App = () => {
       scrollToId(anchor);
       return;
     }
-    if (p === '/') {
-      history.pushState(null, '', '/');
-    } else {
-      history.pushState(null, '', '/');
-      window.location.hash = p;
-    }
+    history.pushState(null, '', p);
     setPage(p);
     if (anchor) {
       setTimeout(() => scrollToId(anchor), 50);
